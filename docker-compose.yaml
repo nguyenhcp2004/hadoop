@@ -29,6 +29,32 @@ services:
     networks:
       - hadoop
 
+  datanode2:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode2
+    restart: always
+    volumes:
+      - hadoop_datanode2:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: 'namenode:9870'
+    env_file:
+      - ./hadoop.env
+    networks:
+      - hadoop
+
+  datanode3:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode3
+    restart: always
+    volumes:
+      - hadoop_datanode3:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: 'namenode:9870'
+    env_file:
+      - ./hadoop.env
+    networks:
+      - hadoop
+
   resourcemanager:
     image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
     container_name: resourcemanager
@@ -51,6 +77,21 @@ services:
     networks:
       - hadoop
 
+  spark:
+    image: bitnami/spark:3.3
+    container_name: spark
+    user: root
+    restart: always
+    networks:
+      - hadoop
+    volumes:
+      - ./hadoop-conf:/opt/bitnami/spark/conf/hadoop-conf
+      - ./script:/opt/bitnami/spark/script
+    ports:
+      - 8080:8080
+      - 7077:7077
+    # command: sleep infinity
+
   nifi:
     image: apache/nifi:1.26.0
     container_name: nifi
@@ -67,6 +108,8 @@ services:
 volumes:
   hadoop_namenode:
   hadoop_datanode:
+  hadoop_datanode2:
+  hadoop_datanode3:
   hadoop_historyserver:
 
 networks:
