@@ -105,12 +105,25 @@ services:
     volumes:
       - ./hadoop-conf:/opt/nifi/nifi-current/conf/hadoop-conf
 
+  mysql:
+    image: mysql:latest
+    container_name: mysql-db
+    ports:
+      - 3306:3306
+    networks:
+      - hadoop
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+    volumes:
+      - mysql-data:/var/lib/mysql
+
 volumes:
   hadoop_namenode:
   hadoop_datanode:
   hadoop_datanode2:
   hadoop_datanode3:
   hadoop_historyserver:
+  mysql-data:
 
 networks:
   hadoop:
